@@ -17,13 +17,13 @@ function launchModal() {
   modalbg.style.display = "block";
 }
 
-//FERME LA MODAL
+// FERME LA MODAL
 modalClose.addEventListener("click", closePls)
 function closePls() {
   modalbg.style.display = "none";
 }
 
-
+let error = 0;
 
 let checkFirstname = () => {
 
@@ -37,12 +37,12 @@ let checkFirstname = () => {
 
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez entrer au minimum 2 caractères');
-
+    error++
   } else if (!validCharacters.test(firstNameValue)) {
 
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Aucun chiffre autorisé');
-
+    error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
     console.log(firstName.parentNode);
@@ -61,12 +61,12 @@ let checkLastname = () => {
 
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez entrer au minimum 2 caractères');
-
+    error++
   } else if (!validCharacters.test(userNameValue)) {
 
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Aucun chiffre autorisé');
-
+    error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
     console.log(userName.parentNode);
@@ -87,17 +87,17 @@ let checkBirthday = () => {
     console.log('trim test');
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez saisir une DATE valide.');
-
+    error++
   } else if (isNaN(birthDate.getTime())) {
     console.log('is nan');
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'La DATE n\'existe pas.');
-
+    error++
   } else if (age < 16) {
     console.log('inférieur 16');
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Vous devez avoir plus de 16 ans');
-
+    error++
   } else {
     console.log('else');
     parentElement.setAttribute('data-error-visible', 'false');
@@ -118,7 +118,7 @@ let checkEmail = () => {
   } else {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Email invalide !');
-
+    error++
   }
 }
 
@@ -134,7 +134,7 @@ let checkTournament = () => {
   } else {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez saisir une valeur');
-
+    error++
   }
 }
 
@@ -159,7 +159,7 @@ let checkCity = () => {
     let parentElement = radios[0].parentNode;
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Sélectionnez au moins une option !');
-
+    error++
   }
 }
 
@@ -172,7 +172,7 @@ let checkTerms = () => {
   if (!checkbox1Valid) {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', "Veuillez accepter les conditions d'utilisation");
-
+    error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
     console.log(checkbox1.parentNode);
@@ -180,11 +180,21 @@ let checkTerms = () => {
   }
 }
 
-
 let registerForm = document.getElementById("form-register")
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
+
+
+
+  validateForm();
+  console.log(error)
+
+
+});
+
+let validateForm = () => {
+  error = 0;
   checkTerms();
   checkBirthday();
   checkCity();
@@ -193,6 +203,45 @@ registerForm.addEventListener("submit", (e) => {
   checkFirstname();
   checkLastname();
 
-});
+  if (error == 0) {
+    modalbg.style.display = "none";
+    /*
+    let allInputs = document.querySelectorAll('#form input')
+    allInputs.forEach(input => {
+      input.value = "";
+    });
+    */
+    registerForm.reset();
+    createConfirmationModal();
+  }
+}
 
-validateForm();
+const createConfirmationModal = () => {
+  // Eléments de la modal
+  const modalOverlay = document.createElement("div");
+  modalOverlay.classList.add("modal-overlay");
+
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  const message = document.createElement("p");
+  message.textContent = 'Merci ! Votre réservation a été reçue.';
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = 'Fermer';
+
+  // Ajout elements à la modal
+  modal.appendChild(message);
+  modal.appendChild(closeButton);
+
+  // Ajout modal à l'overlay
+  modalOverlay.appendChild(modal);
+
+  // Ajout overlay à la page
+  document.body.appendChild(modalOverlay);
+
+  // Ajout evenement pour fermer la modal
+  closeButton.addEventListener("click", () => {
+    document.body.removeChild(modalOverlay);
+  });
+}
