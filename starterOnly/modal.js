@@ -6,7 +6,6 @@ const editNav = () => {
 // DOM Elements
 const modalbg = document.getElementById("form");
 const modalBtn = document.querySelectorAll(".modal-btn");
-const formData = document.querySelectorAll(".formData");
 const modalClose = document.querySelector(".close");
 
 // launch modal event
@@ -18,13 +17,12 @@ function launchModal() {
 }
 
 // FERME LA MODAL
-modalClose.addEventListener("click", closePls)
-function closePls() {
+modalClose.addEventListener("click", closeModal)
+function closeModal() {
   modalbg.style.display = "none";
 }
 
-let error = 0;
-
+// Vérifie si le prenom est > à 2 caractères, contient uniquement des lettres et "-"
 let checkFirstname = () => {
 
   const firstName = document.getElementById("firstName");
@@ -45,10 +43,10 @@ let checkFirstname = () => {
     error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
-    console.log(firstName.parentNode);
   }
 }
 
+// Vérifie si le nom est > à 2 caractères, contient uniquement des lettres et "-"
 let checkLastname = () => {
 
   const userName = document.getElementById("userName");
@@ -69,40 +67,11 @@ let checkLastname = () => {
     error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
-    console.log(userName.parentNode);
 
   }
 }
-let checkBirthday = () => {
-  const birthdayElement = document.getElementById('birthday');
-  const birthdayValue = birthdayElement.value;
-  const dateRegex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
 
-  let parentElement = birthdayElement.parentNode;
-  const birthDate = new Date(birthdayValue);
-  const currentYear = new Date().getFullYear();
-  const age = currentYear - birthDate.getFullYear();
-
-  if (!dateRegex.test(birthdayValue) && birthdayValue.trim() === '') {
-    console.log('trim test');
-    parentElement.setAttribute('data-error-visible', 'true');
-    parentElement.setAttribute('data-error', 'Veuillez saisir une DATE valide.');
-    error++
-  } else if (isNaN(birthDate.getTime())) {
-    console.log('is nan');
-    parentElement.setAttribute('data-error-visible', 'true');
-    parentElement.setAttribute('data-error', 'La DATE n\'existe pas.');
-    error++
-  } else if (age < 16) {
-    console.log('inférieur 16');
-    parentElement.setAttribute('data-error-visible', 'true');
-    parentElement.setAttribute('data-error', 'Vous devez avoir plus de 16 ans');
-    error++
-  } else {
-    console.log('else');
-    parentElement.setAttribute('data-error-visible', 'false');
-  }
-}
+// Vérifie si l'email est conforme
 let checkEmail = () => {
 
   const emailElement = document.getElementById("email");
@@ -113,8 +82,7 @@ let checkEmail = () => {
   if (emailRegex.test(emailValue)) {
     mailValid = true;
     parentElement.setAttribute('data-error-visible', 'false');
-    console.log(emailElement.parentNode);
-
+    //console.log(emailElement.parentNode);
   } else {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Email invalide !');
@@ -122,6 +90,37 @@ let checkEmail = () => {
   }
 }
 
+// Vérifie si la date n'est pas vide, si il n'y a que des valeurs numériques 
+// et calcule l'âge qui doit être supérieur à 16 ans
+let checkBirthday = () => {
+  const birthdayElement = document.getElementById('birthday');
+  const birthdayValue = birthdayElement.value;
+  const dateRegex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
+
+  let parentElement = birthdayElement.parentNode;
+
+  const birthDate = new Date(birthdayValue);
+  const currentYear = new Date().getFullYear();
+  const age = currentYear - birthDate.getFullYear();
+
+  if (!dateRegex.test(birthdayValue) && birthdayValue.trim() === '') {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Veuillez saisir une DATE valide.');
+    error++
+  } else if (isNaN(birthDate.getTime())) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'La DATE n\'existe pas.');
+    error++
+  } else if (age < 16) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Vous devez avoir plus de 16 ans');
+    error++
+  } else {
+    parentElement.setAttribute('data-error-visible', 'false');
+  }
+}
+
+// Verifie si au moins une valeurs numérique est reçu
 let checkTournament = () => {
 
   const eventInput = document.getElementById("eventsNbr");
@@ -138,6 +137,7 @@ let checkTournament = () => {
   }
 }
 
+// Verifie si au moins une checkbox est coché
 let checkCity = () => {
 
   const radios = document.querySelectorAll('input[name="location"]');
@@ -150,9 +150,7 @@ let checkCity = () => {
   });
 
   if (isValidOption) {
-    console.log(radios[0].parentNode);
     let parentElement = radios[0].parentNode;
-
     parentElement.setAttribute('data-error-visible', 'false');
 
   } else {
@@ -164,7 +162,7 @@ let checkCity = () => {
 }
 
 
-
+// Verifie si la checkbox "checkbox1" correspondant aux conditions d'utilisation est coché
 let checkTerms = () => {
   const checkbox1 = document.getElementById("checkbox1");
   const checkbox1Valid = checkbox1.checked;
@@ -175,26 +173,25 @@ let checkTerms = () => {
     error++
   } else {
     parentElement.setAttribute('data-error-visible', 'false');
-    console.log(checkbox1.parentNode);
-
   }
 }
 
+// Ecouteur d'evenement submit sur l'ensemble du formulaire. 
+// Empêche la réinitialisation par defaut et garde les données entrées
 let registerForm = document.getElementById("form-register")
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-
-
-
   validateForm();
-  console.log(error)
-
-
 });
 
+// Appel toutes les fonctions correspondant à chaque champ. 
+// Si la varible "error" n'a pas été incrémenter ( = à 0) alors : fermeture de la modal +
+// réinitialisation du formulaire + appel de la fonction de confirmation
 let validateForm = () => {
+
   error = 0;
+
   checkTerms();
   checkBirthday();
   checkCity();
@@ -205,16 +202,12 @@ let validateForm = () => {
 
   if (error == 0) {
     modalbg.style.display = "none";
-    /*
-    let allInputs = document.querySelectorAll('#form input')
-    allInputs.forEach(input => {
-      input.value = "";
-    });
-    */
     registerForm.reset();
     createConfirmationModal();
   }
 }
+
+// Creation de la modal de confirmation 
 
 const createConfirmationModal = () => {
   // Eléments de la modal
