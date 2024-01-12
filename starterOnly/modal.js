@@ -29,10 +29,13 @@ let checkFirstname = () => {
   const firstNameValue = firstName.value.trim();
   let parentElement = firstName.parentNode;
 
-  const validCharacters = /^[a-zA-Z\-]+$/;
+  const validCharacters = /^[a-zA-ZÀ-ÖØ-öø-ÿ\-]+$/;
 
-  if (firstNameValue.length < 2) {
-
+  if (firstNameValue.length === 0) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Le champ ne doit pas être vide');
+    error++
+  } else if (firstNameValue.length < 2) {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez entrer au minimum 2 caractères');
     error++
@@ -53,9 +56,14 @@ let checkLastname = () => {
   const userNameValue = userName.value.trim();
   let parentElement = userName.parentNode;
 
-  const validCharacters = /^[a-zA-Z\-]+$/;
+  const validCharacters = /^[a-zA-ZÀ-ÖØ-öø-ÿ\-]+$/;
 
-  if (userNameValue.length < 2) {
+  if (userNameValue.length === 0) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Le champ ne doit pas être vide');
+    error++
+  }
+  else if (userNameValue.length < 2) {
 
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez entrer au minimum 2 caractères');
@@ -79,10 +87,13 @@ let checkEmail = () => {
   let parentElement = emailElement.parentNode;
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  if (emailRegex.test(emailValue)) {
+  if (emailValue.length === 0) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Le champ ne doit pas être vide');
+    error++
+  } else if (emailRegex.test(emailValue)) {
     mailValid = true;
     parentElement.setAttribute('data-error-visible', 'false');
-    //console.log(emailElement.parentNode);
   } else {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Email invalide !');
@@ -103,7 +114,12 @@ let checkBirthday = () => {
   const currentYear = new Date().getFullYear();
   const age = currentYear - birthDate.getFullYear();
 
-  if (!dateRegex.test(birthdayValue) && birthdayValue.trim() === '') {
+
+  if (birthdayValue.length === 0) {
+    parentElement.setAttribute('data-error-visible', 'true');
+    parentElement.setAttribute('data-error', 'Le champ ne doit pas être vide');
+    error++
+  } else if (!dateRegex.test(birthdayValue) && birthdayValue.trim() === '') {
     parentElement.setAttribute('data-error-visible', 'true');
     parentElement.setAttribute('data-error', 'Veuillez saisir une DATE valide.');
     error++
@@ -182,7 +198,24 @@ let registerForm = document.getElementById("form-register")
 registerForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  validateForm();
+  if (validateForm()) {
+    const formData = new FormData(registerForm);
+    console.log(
+      "data : ",
+      formData.get("firstName"),
+      formData.get("userName"),
+      formData.get("email"),
+      formData.get("birthday"),
+      formData.get("eventsNbr"),
+      formData.get("location")
+    );
+    modalbg.style.display = "none";
+    registerForm.reset();
+    createConfirmationModal();
+
+
+  }
+
 });
 
 // Appel toutes les fonctions correspondant à chaque champ. 
@@ -201,10 +234,10 @@ let validateForm = () => {
   checkLastname();
 
   if (error == 0) {
-    modalbg.style.display = "none";
-    registerForm.reset();
-    createConfirmationModal();
+    return true;
   }
+  return false;
+
 }
 
 // Creation de la modal de confirmation 

@@ -51,16 +51,16 @@
       <div class="content">
         <span class="close"></span>
         <div class="modal-body">
-          <form id="form-register" name="reserve" action="index.html" method="get">
+          <form id="form-register" name="reserve" action="index.html" method="post" novalidate>
 
             <div class="formData" id="firstNameFormData">
               <label for="firstName">Prénom</label><br>
-              <input class="text-control" type="text" id="firstName" name="first" minlength="2" /><br>
+              <input class="text-control" type="text" id="firstName" name="firstName" minlength="2" /><br>
             </div>
 
             <div class="formData">
-              <label for="name">Nom</label><br>
-              <input class="text-control" type="text" id="userName" name="last" minlength="2" /><br>
+              <label for="userName">Nom</label><br>
+              <input class="text-control" type="text" id="userName" name="userName" minlength="2" /><br>
             </div>
 
             <div class="formData">
@@ -69,12 +69,12 @@
             </div>
             <div class="formData">
               <label for="birthday">Date de naissance</label><br>
-              <input class="text-control" type="date" id="birthday" name="birthdate" /><br>
+              <input class="text-control" type="date" id="birthday" name="birthday" /><br>
             </div>
 
             <div class="formData">
               <label for="eventsNbr">À combien de tournois GameOn avez-vous déjà participé ?</label><br>
-              <input type="number" class="text-control" id="eventsNbr" name="quantity" min="0" max="99">
+              <input type="number" class="text-control" id="eventsNbr" name="eventsNbr" min="0" max="99">
             </div>
 
 
